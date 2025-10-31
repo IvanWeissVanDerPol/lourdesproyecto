@@ -11,6 +11,11 @@ from pathlib import Path
 import sys
 import logging
 
+# Fix encoding for Windows
+if sys.platform == 'win32':
+    sys.stdout.reconfigure(encoding='utf-8')
+    sys.stderr.reconfigure(encoding='utf-8')
+
 from .core.converter import APAConverter
 from .config.apa7_config import APAConfig
 from .core.utils.logger import APAConverterLogger
