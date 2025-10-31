@@ -247,6 +247,7 @@ class TesisAPACompleta:
         filas_tabla = []
         en_codigo = False
         bloque_codigo = []
+        prev_line_empty = False
 
         for i, linea in enumerate(lineas):
             if i % 1000 == 0:
@@ -293,27 +294,43 @@ class TesisAPACompleta:
                     filas_tabla = []
                     en_tabla = False
 
-            # Saltar líneas vacías y separadores
-            if not linea.strip() or linea.strip() in ['---', '___', '***']:
+            # Saltar separadores pero trackear líneas vacías
+            if linea.strip() in ['---', '___', '***']:
                 continue
 
-            # Títulos
-            if linea.startswith('## ') and not linea.startswith('### '):
+            # Si es línea vacía, marcar para siguiente iteración
+            if not linea.strip():
+                prev_line_empty = True
+                continue
+
+            # Títulos con # (nivel superior)
+            if linea.startswith('# ') and not linea.startswith('## '):
+                texto = self.limpiar_texto(linea[2:].strip())
+                p = self.doc.add_paragraph(texto)
+                p.style = 'Heading 1'
+                prev_line_empty = False
+                continue
+
+            # Títulos con ##
+            elif linea.startswith('## ') and not linea.startswith('### '):
                 texto = self.limpiar_texto(linea[3:].strip())
                 p = self.doc.add_paragraph(texto)
                 p.style = 'Heading 1'
+                prev_line_empty = False
                 continue
 
             elif linea.startswith('### ') and not linea.startswith('#### '):
                 texto = self.limpiar_texto(linea[4:].strip())
                 p = self.doc.add_paragraph(texto)
                 p.style = 'Heading 2'
+                prev_line_empty = False
                 continue
 
             elif linea.startswith('#### ') and not linea.startswith('##### '):
                 texto = self.limpiar_texto(linea[5:].strip())
                 p = self.doc.add_paragraph(texto)
                 p.style = 'Heading 3'
+                prev_line_empty = False
                 continue
 
             # Listas
@@ -322,6 +339,7 @@ class TesisAPACompleta:
                 p = self.doc.add_paragraph(style='List Bullet')
                 p.paragraph_format.line_spacing = 2.0
                 self.agregar_formato_inline(p, texto)
+                prev_line_empty = False
                 continue
 
             elif re.match(r'^\d+\.\s', linea.strip()):
@@ -329,6 +347,7 @@ class TesisAPACompleta:
                 p = self.doc.add_paragraph(style='List Number')
                 p.paragraph_format.line_spacing = 2.0
                 self.agregar_formato_inline(p, texto)
+                prev_line_empty = False
                 continue
 
             # Blockquotes
@@ -336,6 +355,7 @@ class TesisAPACompleta:
                 texto = linea.strip()[1:].strip()
                 p = self.doc.add_paragraph(style='Quote')
                 self.agregar_formato_inline(p, texto)
+                prev_line_empty = False
                 continue
 
             # Texto normal (usar estilo Reference en sección de referencias)
@@ -343,7 +363,13 @@ class TesisAPACompleta:
                 p = self.doc.add_paragraph()
                 if en_seccion_referencias and linea.strip() and not linea.startswith('#'):
                     p.style = 'Reference'
+
+                # Agregar espacio adicional si había línea vacía previa (nuevo párrafo)
+                if prev_line_empty and not en_seccion_referencias:
+                    p.paragraph_format.space_before = Pt(12)
+
                 self.agregar_formato_inline(p, linea)
+                prev_line_empty = False
 
         print(f"\n    Completado: 100.0%")
 
