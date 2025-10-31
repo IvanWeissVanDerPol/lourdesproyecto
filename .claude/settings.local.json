@@ -9,7 +9,9 @@
       "Bash(python analyze_docx.py:*)",
       "Bash(rm:*)",
       "Bash(python analyze_tesis_docx.py:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(python -c:*)",
+      "Bash(python analyze_apa7_compliance.py:*)"
     ],
     "deny": [],
     "ask": []

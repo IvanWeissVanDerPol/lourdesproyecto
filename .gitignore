@@ -134,7 +134,6 @@ dmypy.json
 Thumbs.db
 
 # Project specific
-*.docx
 !tests/fixtures/*.docx
 *.log
 logs/
