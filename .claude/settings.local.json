@@ -14,7 +14,8 @@
       "Bash(python analyze_apa7_compliance.py:*)",
       "Bash(python extract_sections.py:*)",
       "Bash(python apply_apa7_corrections.py:*)",
-      "Bash(python validate_corrected_document.py:*)"
+      "Bash(python validate_corrected_document.py:*)",
+      "Bash(python enhance_tables_styling.py:*)"
     ],
     "deny": [],
     "ask": []
