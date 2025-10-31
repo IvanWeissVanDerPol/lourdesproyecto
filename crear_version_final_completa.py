@@ -333,9 +333,9 @@ class TesisAPACompleta:
 
             # Blockquotes
             elif linea.strip().startswith('>'):
-                texto = self.limpiar_texto(linea.strip()[1:].strip())
-                p = self.doc.add_paragraph(texto)
-                p.style = 'Quote'
+                texto = linea.strip()[1:].strip()
+                p = self.doc.add_paragraph(style='Quote')
+                self.agregar_formato_inline(p, texto)
                 continue
 
             # Texto normal (usar estilo Reference en sección de referencias)
